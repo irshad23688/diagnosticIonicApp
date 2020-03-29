@@ -1,17 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
 import { IonicModule } from '@ionic/angular';
 
-import { AddAppointmentPage } from './add-appointment.page';
-import { DatePickerModule } from '@syncfusion/ej2-angular-calendars';
+import { PaymentFailurePage } from './payment-failure.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: AddAppointmentPage
+    component: PaymentFailurePage
   }
 ];
 
@@ -20,10 +19,8 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    DatePickerModule,
-    ReactiveFormsModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [AddAppointmentPage]
+  declarations: [PaymentFailurePage]
 })
-export class AddAppointmentPageModule {}
+export class PaymentFailurePageModule {}

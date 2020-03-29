@@ -6,7 +6,6 @@ import {Router }from '@angular/router';
 import {WebIntent }from '@ionic-native/web-intent/ngx'; 
 import {AngularFireAuth }from '@angular/fire/auth'; 
 import {Observable }from 'rxjs'; 
-import {map }from 'rxjs/operators'; 
 
 declare var swal:any; 
 @Component( {
@@ -16,7 +15,9 @@ declare var swal:any;
 
 })
 export class AddAppointmentPage implements OnInit {
-  addappointment:FormGroup; 
+ 
+  public minDate: Date = new Date();
+  addAppointmentForm:FormGroup; 
   appointmentDetails:AngularFireList < any > ; 
   updateSuccessObj:AngularFireObject < any > 
   labAppointmentList:any; 
@@ -51,7 +52,7 @@ export class AddAppointmentPage implements OnInit {
   }
 
   ngOnInit() {
-    this.addappointment = this.formBuilder.group( {
+    this.addAppointmentForm = this.formBuilder.group( {
      name:['', Validators.required], 
       number:['', Validators.required], 
       gender:['', Validators.required], 
@@ -79,9 +80,10 @@ onSubmit() {
         labKey:this.appointmentId, 
         labName:this.labName, 
         serviceRate:this.servicePrice, 
-        bookingId:this.bookingId
+        bookingId:this.bookingId,
+        appointDate: this.formatDate(this.addAppointmentForm.value.appointDate)
       }
-      let newAppointDetails = Object.assign(this.addappointment.value, keyDetails)
+      let newAppointDetails = Object.assign(this.addAppointmentForm.value, keyDetails)
       console.log(newAppointDetails)
       this.appointmentDetails.push(newAppointDetails).then(res =>  {
       this.paymentMethod(); 
@@ -106,6 +108,10 @@ displayPrice(event) {
 }
   }
 
+  reset(){
+    this.addAppointmentForm.reset();
+
+  }
   cashPaymentJson() {
     let cashJson =  {
         orderId:this.bookingId, 
@@ -115,7 +121,7 @@ displayPrice(event) {
         modeOfPayment:'Cash', 
         responseCode:'', 
         ApprovalRefNo:'', 
-        service:this.addappointment.value.services, 
+        service:this.addAppointmentForm.value.services, 
         amount:this.servicePrice
 
     }
@@ -125,14 +131,14 @@ displayPrice(event) {
     let upiJson =  {
       orderId:this.bookingId, 
       modeOfPayment:'UPI', 
-      service:this.addappointment.value.services, 
+      service:this.addAppointmentForm.value.services, 
       amount:this.servicePrice, 
       request: {
         txnId:this.transactionId, 
         txnRef:this.userId + this.transactionId, 
         amount:this.servicePrice, 
         currency:'INR', 
-        txnName:this.addappointment.value.services + '' + 'Payment'
+        txnName:this.addAppointmentForm.value.services + '' + 'Payment'
       }
   }
   return upiJson; 
@@ -151,7 +157,7 @@ displayPrice(event) {
     // this.dbKey = this.appointmentDetails.snapshotChanges().pipe(map(changes =>  {
     //   return changes.map(c => ( {key:c.payload.key, ...c.payload.val()}))
     // })); 
-    if (this.addappointment.value.payment === 'cash') {
+    if (this.addAppointmentForm.value.payment === 'cash') {
         this.paymentDetails.push(this.cashPaymentJson()).then(res =>  {
         this.route.navigate(['/appointment'])
         }, error =>  {
@@ -160,7 +166,7 @@ displayPrice(event) {
     } else {
       const options =  {
         action:this.webIntent.ACTION_VIEW, 
-        url:this.paymentUrl + 'pa=' + this.payeeGateway + '&pn=' + this.payeeName + '&tid=' + this.transactionId + '&tr=' + this.userId + this.transactionId + '&am=' + this.servicePrice + '&cu=INR' + '&tn=' + this.addappointment.value.services + '' + 'Payment'
+        url:this.paymentUrl + 'pa=' + this.payeeGateway + '&pn=' + this.payeeName + '&tid=' + this.transactionId + '&tr=' + this.userId + this.transactionId + '&am=' + this.servicePrice + '&cu=INR' + '&tn=' + this.addAppointmentForm.value.services + '' + 'Payment'
         // upi://pay?pa=aqueelshaikh1992@okhdfcbank&pn=irshad&tid=12Abcdef5895&tr=irshad123&am=150&cu=INR&tn=AppPayment'
       }
       this.webIntent.startActivityForResult(options).then(onSuccess=>{
@@ -202,15 +208,28 @@ displayPrice(event) {
  }
  checkcndition(orderid):Promise<any>{
   var ref =this.afd.database.ref("bookings");
-  return ref.orderByChild("bookingId").equalTo(orderid)
-  .once("value")
-  .then(snapshot => {
-  var exercises:any;
-  snapshot.forEach(snap => {
-  exercises=snap.key;
-  return false;
+      return ref.orderByChild("bookingId").equalTo(orderid)
+      .once("value")
+      .then(snapshot => {
+      var exercises:any;
+      snapshot.forEach(snap => {
+      exercises=snap.key;
+      return false;
   });
   return exercises;
   });
+}
+formatDate(date) {
+  var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+  if (month.length < 2) 
+      month = '0' + month;
+  if (day.length < 2) 
+      day = '0' + day;
+
+  return [year, month, day].join('-');
 }
 }

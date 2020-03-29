@@ -56,6 +56,9 @@ export class NewLabPage implements OnInit {
 
   addBtn(){
       this.showForm=true;
+  }
+  backBtn(){
+    this.showForm=false;
 
   }
  formatDate(date) {

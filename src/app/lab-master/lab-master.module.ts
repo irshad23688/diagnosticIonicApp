@@ -6,7 +6,6 @@ import { Routes, RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { LabMasterPage } from './lab-master.page';
-import { LabServiceMasterPage } from '../lab-service-master/lab-service-master.page';
 
 const routes: Routes = [
   {

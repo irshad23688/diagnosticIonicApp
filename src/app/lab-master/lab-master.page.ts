@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormArray } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
-import { LabServiceMasterPage } from '../lab-service-master/lab-service-master.page';
+// import { LabServiceMasterPage } from '../lab-service-master/lab-service-master.page';
 import { IntercomponentService } from '../services/intercomponent.service';
 import { Router } from '@angular/router';
+import { AngularFireAuth } from '@angular/fire/auth';
 declare var swal:any;
 @Component({
   selector: 'app-lab-master',
@@ -12,17 +13,20 @@ declare var swal:any;
   styleUrls: ['./lab-master.page.scss'],
 })
 export class LabMasterPage implements OnInit {
+  services: FormArray;
   serviceList;
   labsignup: FormGroup;
   showPricing= true;
   locationList;
   pushFormData;
+  userId;
+  responseInterComp;
   constructor(private afd: AngularFireDatabase, public formBuilder: FormBuilder, 
     public modalController: ModalController, private interComponent: IntercomponentService,
-    private router: Router) { }
+    private router: Router, public authaf: AngularFireAuth) { }
 
   ngOnInit() {
-    this.pushFormData= this.afd.list('/LabMaster');
+    this.pushFormData= this.afd.list('/labs');
     this.afd.list('/services').valueChanges().subscribe(res=>{
       console.log(res);
       this.serviceList=res;
@@ -41,16 +45,18 @@ export class LabMasterPage implements OnInit {
     //console.log(this.serviceList);
     this.labsignup=this.formBuilder.group({
       labname:['',Validators.required],
-      email:['',Validators.required],
+      email:['',[Validators.required, Validators.email]],
       address:['',Validators.required],
       city:['',Validators.required],
       state:['',Validators.required],
       pincode:['',Validators.required],
       personname:['',Validators.required],
-      mobilenumber:['',Validators.required],
+      mobilenumber:['',[Validators.required, Validators.maxLength(10)]],
       // price:['',Validators.required],
       // service:['',Validators.required],
-      area:['',Validators.required]
+      area:['',Validators.required],
+      services: this.formBuilder.array([ this.createItem() ])
+
     })
   }
   reset(){
@@ -61,34 +67,47 @@ export class LabMasterPage implements OnInit {
     console.log(e);
     this.showPricing=false;
   }
-  onSubmit(){
-    console.log("hello",this.labsignup.value);
+  createItem(): FormGroup {
+    return this.formBuilder.group({
+      service:['', Validators.required],
+      price:['',Validators.required],
+      
+    });
+  }
+  addItem(){
+    this.services = this.labsignup.get('services') as FormArray;
+    this.services.push(this.createItem());
+  }
+  removeItem (index){
+    (this.labsignup.get('services') as FormArray).removeAt(index);
 
+  }
+  onSubmit(){
     if(this.labsignup.invalid){
       return;
     }
-    
-    this.interComponent.sendMessage(this.labsignup.value);
-    this.router.navigate(['/lab-service-master']);
-    //this.presentModal();
-
-    // this.pushFormData.push(this.labsignup.value).subscribe(res=>{
-    //   this.labsignup.reset();
-    // },error=>{
-    //   swal.fire('Something went wrong!');
-    // })
-  }
-  async presentModal() {
-    const modal = await this.modalController.create({
-      component: LabServiceMasterPage
-    });
-    return await modal.present();
+    this.responseInterComp=Object.assign(this.labsignup.value,{'createdDate': Date.now(),
+    'createdId' : this.userId,
+    'updatedDate': Date.now(),
+    'updatedId' : this.userId,
+    'isActive' :true,})
+    this.pushFormData.push( this.responseInterComp).then(res=>{ 
+      swal.fire('Saved successfully!');
+      this.router.navigate(['/home']);
+      this.labsignup.reset();
+    },error=>{
+      swal.fire('Something Went Wrong!');
+    })
   }
   ionViewWillEnter(){
-    console.log('ionViewWillEnter')
+    if (this.authaf.auth.currentUser) {
+      this.userId = this.authaf.auth.currentUser.uid;
+    }
     this.interComponent.getMessage().subscribe(res=>{
-      console.log(res);
+      this.responseInterComp=res;
+      console.log("check",res);
     })
   }
  
 }
+
