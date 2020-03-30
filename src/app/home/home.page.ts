@@ -32,7 +32,7 @@ export class HomePage {
 
 
   ionViewDidEnter() {
-    this.labMasterRef = this.af.list('/labs');
+    this.labMasterRef = this.af.list('/labs',ref => ref.orderByChild('isActive').equalTo(true));
     
     this.present();
   }
