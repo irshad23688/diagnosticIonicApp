@@ -26,6 +26,7 @@ async present() {
     a.present().then(() => {
         this.appointmentList.valueChanges().subscribe(data => {
         this.tableData = data;
+        console.log(this.tableData);
         a.dismiss().then(() => console.log('abort presenting'));
         });
         });

@@ -81,6 +81,8 @@ onSubmit() {
         labName:this.labName, 
         serviceRate:this.servicePrice, 
         bookingId:this.bookingId,
+        status:'Booked',
+        pStatus:'Pending',
         appointDate: this.formatDate(this.addAppointmentForm.value.appointDate)
       }
       let newAppointDetails = Object.assign(this.addAppointmentForm.value, keyDetails)
@@ -115,10 +117,10 @@ displayPrice(event) {
   cashPaymentJson() {
     let cashJson =  {
         orderId:this.bookingId, 
-        Status:'Success', 
+        pStatus:'Pending',
         txnId:'', 
         txnRef:'', 
-        modeOfPayment:'Cash', 
+        modeOfPayment:'Cash',
         responseCode:'', 
         ApprovalRefNo:'', 
         service:this.addAppointmentForm.value.services, 
@@ -133,6 +135,7 @@ displayPrice(event) {
       modeOfPayment:'UPI', 
       service:this.addAppointmentForm.value.services, 
       amount:this.servicePrice, 
+      // status:'Booked',
       request: {
         txnId:this.transactionId, 
         txnRef:this.userId + this.transactionId, 
@@ -157,8 +160,10 @@ displayPrice(event) {
     // this.dbKey = this.appointmentDetails.snapshotChanges().pipe(map(changes =>  {
     //   return changes.map(c => ( {key:c.payload.key, ...c.payload.val()}))
     // })); 
-    if (this.addAppointmentForm.value.payment === 'cash') {
-        this.paymentDetails.push(this.cashPaymentJson()).then(res =>  {
+    if (this.addAppointmentForm.value.payment === 'Cash') {
+      let cashPayment=this.cashPaymentJson()
+      console.log('cahsp', cashPayment)
+        this.paymentDetails.push(cashPayment).then(res =>  {
         this.route.navigate(['/appointment'])
         }, error =>  {
           swal.fire('Something Went Wrong'); 
@@ -166,7 +171,7 @@ displayPrice(event) {
     } else {
       const options =  {
         action:this.webIntent.ACTION_VIEW, 
-        url:this.paymentUrl + 'pa=' + this.payeeGateway + '&pn=' + this.payeeName + '&tid=' + this.transactionId + '&tr=' + this.userId + this.transactionId + '&am=' + this.servicePrice + '&cu=INR' + '&tn=' + this.addAppointmentForm.value.services + '' + 'Payment'
+        url:this.paymentUrl + 'pa=' + this.payeeGateway + '&pn=' + this.payeeName + '&tid=' + this.transactionId + '&tr=' + this.userId + this.transactionId + '&am=' + this.servicePrice + '&cu=INR' + '&tn=' + this.addAppointmentForm.value.services + ' ' + 'Payment'+' ' + this.bookingId
         // upi://pay?pa=aqueelshaikh1992@okhdfcbank&pn=irshad&tid=12Abcdef5895&tr=irshad123&am=150&cu=INR&tn=AppPayment'
       }
       this.webIntent.startActivityForResult(options).then(onSuccess=>{
@@ -199,7 +204,7 @@ displayPrice(event) {
   //    responseData.forEach(r=>{
   //      if(r.bookingId===this.bookingId){
        this.updateSuccessObj= this.afd.object("/bookings/"+key)
-       this.updateSuccessObj.update({status:reponseStatus}).then((res)=>{
+       this.updateSuccessObj.update({pStatus:reponseStatus}).then((res)=>{
         //  alert('Updated')
         });
       //  }
