@@ -1,0 +1,41 @@
+.color-boxes {
+    display: none;
+}
+
+.show {
+    display: inline !important;
+}
+
+ion-item {
+    font: normal;
+    font-size: 15px;
+}
+
+ion-label {
+    color: #555555 !important;
+}
+.ionContent{
+    // --ion-background-color: #f4f4f6;
+}
+.item {
+    --border-color: var(--ion-color, black);
+}
+
+.swal2-styled.swal2-confirm {
+    font-size: 12px !important;
+}
+
+.swal2-title {
+    font-size: 14px !important;
+}
+textarea{
+    margin-bottom: 10px;
+}
+.address{
+    margin-top: 10px;
+
+}
+.ionCard{
+    width: 96%;
+    background-color: white;
+}

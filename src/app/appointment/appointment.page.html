@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+    <ion-title>
+        Appointment
+        <button class="addBtn" routerLink="/home">Book</button>
+    </ion-title>
+   
+  </ion-toolbar>
+ </ion-header>
+   <ion-content>
+     <ion-grid>
+       
+       <ion-row class="headercol">
+          <ion-col size="3"> Patient Name</ion-col>
+          <ion-col size="3">Lab Name</ion-col>
+          <ion-col size="3">Appointment Date</ion-col>
+          <ion-col size="3">View</ion-col>
+        </ion-row>
+      
+       <ion-row *ngFor="let data of tableData">
+          <ion-col size="3"> {{data.name}}</ion-col>
+          <ion-col size="3">{{data.labName}} </ion-col>
+          <ion-col size="3">{{data.appointDate | date :'dd-MM-yyyy h:mm a'}}</ion-col> 
+          <ion-col size="3">
+              <ion-button size="small" color="light"><ion-icon name="search"></ion-icon></ion-button>
+          </ion-col>
+       </ion-row>    
+    </ion-grid>
+</ion-content>
+
+

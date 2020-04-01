@@ -1,0 +1,45 @@
+.cancelBtn{
+    float: right;
+    color: white;
+    background-color: #f902029c;
+    width: 30px;
+    height: 30px;
+}
+.masters{
+    --ion-background-color: #f4f4f6;
+}
+ion-card{
+    background-color: white;
+}
+.submitBtn{
+    background-color: #2dd36f !important;
+    border-radius: 8px;
+    padding: 10px 30px;
+    width: 80%;
+    color: white;
+}
+.addBtn{
+    float: right;
+    background-color: #ff6c00;
+    font-size: 18px;
+    border-radius: 8px;
+    // width:25%;
+    color: white;
+    height: 30px;
+    margin-top: 10px;
+    // margin-bottom: 5px;
+}
+.backBtn{
+    float: right;
+    background-color: rgba(54, 54, 235, 0.671);
+    font-size: 18px;
+    border-radius: 8px;
+    // width:25%;
+    color: white;
+    height: 30px;  
+}
+ion-label{
+    margin-left: 5px;
+    margin-top: 5px;
+
+}

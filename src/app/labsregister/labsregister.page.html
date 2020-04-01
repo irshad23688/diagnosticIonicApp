@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Lab Registation</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-card>
+  <ion-grid>
+
+      <form [formGroup]="labsignup" (ngSubmit)="onSubmit()">
+    <ion-item class="item">
+    <ion-label position="floating">Lab Name</ion-label>
+    <ion-input  formControlName='labname'></ion-input>
+    </ion-item>
+    <ion-item class="item">
+        <ion-label position="floating">Email</ion-label>
+        <ion-input  formControlName='email'></ion-input>
+        </ion-item>
+    <ion-item class="item">
+        <ion-label position="floating">Address</ion-label>
+        <ion-input  formControlName='address'></ion-input>
+    </ion-item>
+    <ion-item class="item">
+        <ion-label position="floating">Address Line1</ion-label>
+        <ion-input  formControlName='addressline1'></ion-input>
+    </ion-item>
+    <ion-item class="item">
+        <ion-label position="floating">City</ion-label>
+        <ion-input  formControlName='city'></ion-input>
+    </ion-item>
+    <ion-item class="item">
+        <ion-label position="floating">State</ion-label>
+        <ion-input  formControlName='state'></ion-input>
+   </ion-item>
+   <ion-item class="item">
+      <ion-label position="floating">Pin Code</ion-label>
+      <ion-input  formControlName='pincode'></ion-input>
+    </ion-item>
+    <ion-item class="item">
+        <ion-label position="floating">Contact Person Name</ion-label>
+        <ion-input  formControlName='personname'></ion-input>
+    </ion-item>
+    <ion-item class="item">
+          <ion-label position="floating">Mobile Number</ion-label>
+          <ion-input  formControlName='mobilenumber'></ion-input>
+    </ion-item>
+    <div>
+        <ion-button type="submit"  expand="block">Submit</ion-button>
+         <ion-button type ="button"   expand="block" (click)='onCancel()' color="light">Back</ion-button>
+      </div>
+  </form> 
+  </ion-grid>
+</ion-card>
+</ion-content>

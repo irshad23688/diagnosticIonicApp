@@ -1,0 +1,101 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+    <ion-title>Add Appointment</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-card *ngFor="let list of labAppointmentList" >
+    <ion-row>
+      <ion-col size="12">
+          <b class="labName"><i class="fa fa-flask" aria-hidden="true"></i>
+            {{list.labname}}</b>
+      </ion-col>              
+       </ion-row>
+       <ion-row>
+         <ion-col  size="12">
+            <i class="fa fa-map-marker" aria-hidden="true"></i>&nbsp;
+            {{list.area}}, {{list.city}} - {{list.pincode}}
+         </ion-col>
+         </ion-row>          
+       <ion-row>
+          <ion-col size="12">
+             {{list.personname}} - <i class="fa fa-phone" aria-hidden="true"></i>&nbsp;
+             {{list.mobilenumber}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12">
+             <i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;{{list.email}}
+          </ion-col>
+          
+        </ion-row>
+        <br>
+       
+       
+</ion-card>
+<ion-card >
+  <ion-grid>
+    <form [formGroup]="addappointment" (ngSubmit)="onSubmit()">
+      <ion-row>
+        
+        <!-- <ion-label stacked class="appointlabel"> Services</ion-label> -->
+        <ion-col size="9">
+        <ion-select name="service" placeholder="Select Service" (ionChange)="displayPrice($event)" formControlName='services' interface="popover">
+          <ion-select-option  *ngFor="let ser of labAppointServList">{{ser.service}}</ion-select-option>
+        </ion-select>
+      </ion-col>
+      <ion-col size="3" *ngIf="servicePrice">
+        <ion-input readonly ><i class="fa fa-inr" aria-hidden="true"></i>&nbsp;{{servicePrice}}</ion-input>
+
+      </ion-col>
+      </ion-row>
+      <ion-item>
+        <ion-label position="floating">Enter Patient Name</ion-label>
+        <ion-input  formControlName='name'></ion-input>
+      </ion-item>
+    
+      <ion-item>
+        <ion-label position="floating">Contact Number</ion-label>
+        <ion-input  formControlName='number'></ion-input>
+      </ion-item> <br>
+    
+      <ion-label class="appointlabel"> Gender </ion-label>
+      <ion-select  placeholder="Select Gender" formControlName='gender' interface="popover">
+        <ion-select-option value="male">Male</ion-select-option>
+        <ion-select-option value="female">Female</ion-select-option>
+        <ion-select-option value="other">Other</ion-select-option>
+      </ion-select>
+
+        <!-- <ion-item> -->
+    <!-- <ion-label class="appointlabel" stacked>Labs</ion-label>
+    <ion-select name="lab" placeholder="Select Lab" formControlName='labs' interface="popover">
+      <ion-select-option  *ngFor="let lab of labList">{{lab}}</ion-select-option>
+        </ion-select>  -->
+    <!-- </ion-item> -->
+
+      <ion-item>
+        <ion-label>Select Appointment Date </ion-label>
+        <!-- D MMM YYYY H:mm -->
+        <ion-datetime interface="popover" formControlName='appointDate' displayFormat="D MMM YYYY " min="1997" max="2020"
+          value=date ></ion-datetime>
+      </ion-item>
+
+      <!-- <ion-item> -->
+        <ion-label class="appointlabel">Payment</ion-label>
+        <ion-select placeholder="Select Payment" formControlName='payment' interface="popover">
+          <ion-select-option value="cash">Cash</ion-select-option>
+          <ion-select-option value="upi"> UPI</ion-select-option>
+        </ion-select>
+      <!-- </ion-item> -->
+      <div padding>
+        <ion-button type="submit" size="medium" expand="block">Submit</ion-button>
+      </div>
+    </form>
+  </ion-grid>
+  </ion-card>
+</ion-content>
