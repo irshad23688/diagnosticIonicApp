@@ -42,6 +42,7 @@ export class LoginPage {
   }
 
   login() {
+    this.openLoader();
     this.fireauth.auth.signInWithEmailAndPassword(this.email, this.password)
       .then(res => {
         if (res.user) {
@@ -49,10 +50,12 @@ export class LoginPage {
           localStorage.setItem("uid", res.user.uid);
         //  this.router.navigate(['/home']);
         }
+        this.closeLoading();
       })
       .catch(err => {
         console.log(`login failed ${err}`);
         this.error = err.message;
+        this.closeLoading();
       });
   }
 

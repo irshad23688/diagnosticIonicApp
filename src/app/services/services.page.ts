@@ -53,13 +53,7 @@ export class ServicesPage implements OnInit {
       name: ['', Validators.required],
       // description: [''],
     });
-    var ref =this.af.database.ref("services");
-console.log('ref###',ref);
- ref.orderByChild("name").equalTo("Sonography").once("value", function(snapshot) {
- snapshot.forEach(function(child) {
- console.log(child.key, child.val());
- });
-});
+   
   }
 
   addBtn(){
