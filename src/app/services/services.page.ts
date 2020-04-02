@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { LoadingController } from '@ionic/angular';
+import { AngularFireAuth } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-services',
@@ -14,7 +15,10 @@ export class ServicesPage implements OnInit {
   categoryData;
   categories;
   showForm=false;
-  constructor( private formBuilder: FormBuilder, private af: AngularFireDatabase, private loadingCtrl: LoadingController ) {
+  userId: any;
+  constructor( private formBuilder: FormBuilder, private af: AngularFireDatabase,
+     private loadingCtrl: LoadingController,public authF: AngularFireAuth
+      ) {
     this.categoryRef = this.af.list('/services');
       this.present();
   }
@@ -49,6 +53,13 @@ export class ServicesPage implements OnInit {
       name: ['', Validators.required],
       // description: [''],
     });
+    var ref =this.af.database.ref("services");
+console.log('ref###',ref);
+ ref.orderByChild("name").equalTo("Sonography").once("value", function(snapshot) {
+ snapshot.forEach(function(child) {
+ console.log(child.key, child.val());
+ });
+});
   }
 
   addBtn(){
@@ -77,7 +88,11 @@ export class ServicesPage implements OnInit {
     }
     let dates= new Date();
     let serviceList={
-      'createdDate': this.formatDate(dates).toString(),
+      'createdDate': Date.now(),
+      'createdId' : this.userId,
+      'updatedDate': Date.now(),
+      'updatedId' : this.userId,
+      'isActive' :true,
       'name':this.addService.value.name
     };
     console.log("ser", serviceList)
@@ -86,5 +101,10 @@ export class ServicesPage implements OnInit {
       this.addService.reset();
       this.showForm=false;
     });
+  }
+  ionViewWillEnter() {
+    if (this.authF.auth.currentUser) {
+      this.userId = this.authF.auth.currentUser.uid;
+    }
   }
 }

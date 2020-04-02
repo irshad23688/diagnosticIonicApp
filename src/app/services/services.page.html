@@ -22,7 +22,7 @@
     <ion-card [hidden]="showForm" *ngFor="let data of categories">
       <div>
           <span><b>Service Name</b>: {{data.name}}</span><br>
-          <span><b>Created Date:</b> {{data.createdDate}}</span>
+          <span><b>Created Date:</b> {{data.createdDate | date:'dd-MM-yyyy hh:mm a'}}</span>
       </div>
    </ion-card>
 </ion-content>

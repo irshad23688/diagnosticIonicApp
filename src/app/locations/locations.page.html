@@ -25,11 +25,11 @@
   </ion-card>
   </form>
   <div [hidden]='showMessage' class="nolistMsg">No records to display. Please click on 'add' to add Location</div>
-      <ion-card class="listCard" [hidden]="showForm" *ngFor="let data of categories">
+      <ion-card class="listCard" [hidden]="showForm" *ngFor="let data of locations">
       <div>
           <span><b>Location Name</b>: {{data.name}}</span><br>
           <span><b>Pincode</b>: {{data.pincode}}</span><br>
-          <span><b>Created Date:</b> {{data.createdDate}}</span>
+          <span><b>Created Date:</b> {{data.createdDate | date:'dd-MM-yyyy hh:mm a'}}</span>
       </div>
     </ion-card>
 </ion-content>

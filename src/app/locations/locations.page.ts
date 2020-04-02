@@ -2,6 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { LoadingController, ToastController } from '@ionic/angular';
+import { AngularFireAuth } from '@angular/fire/auth';
 declare var swal :any
 
 @Component({
@@ -13,28 +14,29 @@ declare var swal :any
 })
 export class LocationsPage implements OnInit {
   private labService : FormGroup;
-  categoryRef:any;
-  categoryData;
-  categories;
+  locationRef:any;
+  userId: any;
+  locationData;
+  locations;
   showForm=false;
   showMessage=true;
-  constructor( private formBuilder: FormBuilder, private af: AngularFireDatabase, 
-              private loadingCtrl: LoadingController,public toastCtrl: ToastController ) {
-    this.categoryRef = this.af.list('/locations');
+  constructor( private formBuilder: FormBuilder, private fb: AngularFireDatabase, 
+              private loadingCtrl: LoadingController,public toastCtrl: ToastController,public af: AngularFireAuth ) {
+    this.locationRef = this.fb.list('/locations');
       this.present();
   }
-
+   
   async present() {
     
     return await this.loadingCtrl.create({
       // duration: 5000,
     }).then(a => {
       a.present().then(() => {
-          this.categoryData = this.categoryRef.valueChanges();
-          this.categoryData.subscribe(res=>{
-          this.categories= res;
+          this.locationData = this.locationRef.valueChanges();
+          this.locationData.subscribe(res=>{
+          this.locations= res;
 
-          if(this.categories.length===0){
+          if(this.locations.length===0){
             this.showMessage=false;
           }else{
             this.showMessage=true;
@@ -66,7 +68,7 @@ export class LocationsPage implements OnInit {
 
   backBtn(){
      this.showForm=false;
-     if(this.categories.length===0){
+     if(this.locations.length===0){
       this.showMessage=false;
     }else{
       this.showMessage=true;
@@ -93,19 +95,29 @@ export class LocationsPage implements OnInit {
     }
     let dates= new Date();
     let serviceList={
-      'createdDate': this.formatDate(dates).toString(),
+      'createdDate': Date.now(),
+      'createdId' : this.userId,
+      'updatedDate': Date.now(),
+      'updatedId' : this.userId,
+      'isActive' :true,
       'name':this.labService.value.name,
       'pincode': this.labService.value.pincode
     };
     console.log("ser", serviceList)
 
-    this.categoryRef.push(serviceList).then((res)=>{
+    this.locationRef.push(serviceList).then((res)=>{
       console.log("ser", res)
       swal.fire('Data Saved successfully');
       this.showForm=false;
+      this.labService.reset();
     },error=>{
       swal.fire('Something Went Wrong!');
     });
     
+  }
+  ionViewWillEnter() {
+    if (this.af.auth.currentUser) {
+      this.userId = this.af.auth.currentUser.uid;
+    }
   }
 }

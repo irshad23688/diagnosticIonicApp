@@ -67,6 +67,7 @@ export class LabMasterPage implements OnInit {
     if(this.labsignup.invalid){
       return;
     }
+    
     this.interComponent.sendMessage(this.labsignup.value);
     this.router.navigate(['/lab-service-master']);
     //this.presentModal();
