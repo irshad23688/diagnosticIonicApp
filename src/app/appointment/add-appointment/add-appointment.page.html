@@ -99,7 +99,7 @@
               <!-- <ion-item> -->
                 <ion-label position="stacked" class="appointlabel">Contact Number *</ion-label>
                 <ion-item>
-                <ion-input formControlName='number' type='tel' [max]='10' placeholder="Enter Number"></ion-input>
+                <ion-input formControlName='mobileNumber' type='tel' pattern="^[0-9]{3,45}$" maxlength="10" placeholder="Enter Number"></ion-input>
                </ion-item> 
               <br>
             
@@ -120,7 +120,10 @@
               <!-- <ion-item> -->
                 <ion-label class="appointlabel">Select Appointment Date </ion-label><br>
                 <!-- D MMM YYYY H:mm -->
-                <ejs-datepicker formControlName='appointDate' placeholder="Select Date"  format='yyyy-MM-dd'  [min]="minDate"></ejs-datepicker>
+                <div style="width: 76%;margin-left: 27px;">
+                  <ejs-datepicker  formControlName='appointDate' placeholder="Select Date"  format='yyyy-MM-dd'  [min]="minDate"></ejs-datepicker>
+
+                </div>
                 <!-- <ion-datetime interface="popover" formControlName='appointDate' displayFormat="D MMM YYYY " min="1997" max="2020"
                   value=date ></ion-datetime> -->
               <!-- </ion-item> -->
@@ -128,9 +131,10 @@
               <!-- <ion-item> -->
                 <br> <br> 
                 <ion-label class="appointlabel">Payment *</ion-label>
-                <ion-select placeholder="Select Payment" formControlName='payment' interface="popover">
+                <ion-select placeholder="Select Payment" formControlName='modeOfPayment' interface="popover">
                   <ion-select-option value="Cash">Cash</ion-select-option>
                   <ion-select-option value="UPI"> UPI</ion-select-option>
+                  <ion-select-option value="Card"> Card</ion-select-option>
                 </ion-select>
               <!-- </ion-item> -->
               <div padding>

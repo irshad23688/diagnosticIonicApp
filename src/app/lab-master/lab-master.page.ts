@@ -45,13 +45,13 @@ export class LabMasterPage implements OnInit {
     //console.log(this.serviceList);
     this.labsignup=this.formBuilder.group({
       labname:['',Validators.required],
-      email:['',[Validators.required, Validators.email]],
+      email:['',[Validators.required, Validators.email, Validators.pattern('[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}')]],
       address:['',Validators.required],
       city:['',Validators.required],
       state:['',Validators.required],
       pincode:['',Validators.required],
       personname:['',Validators.required],
-      mobilenumber:['',[Validators.required, Validators.maxLength(10)]],
+      mobilenumber:['',Validators.required],
       // price:['',Validators.required],
       // service:['',Validators.required],
       area:['',Validators.required],

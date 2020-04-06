@@ -6,9 +6,9 @@
 * This source code is licensed as per the terms found in the
 * LICENSE.md file in the root directory of this source tree.
 */
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation, ViewChild } from '@angular/core';
 
-import { Platform } from '@ionic/angular';
+import { Platform, IonRouterOutlet } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AngularFireAuth } from '@angular/fire/auth';
@@ -22,6 +22,8 @@ import { AngularFireDatabase } from '@angular/fire/database';
 })
 export class AppComponent {
   navigate : any;
+  @ViewChild(IonRouterOutlet) routerOutlet: IonRouterOutlet;
+
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -38,7 +40,7 @@ export class AppComponent {
 
   initializeApp() {
     this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
+      this.statusBar.styleLightContent();
       this.splashScreen.hide();
       this.fireauth.auth.onAuthStateChanged((user) => {
         if (user) {
@@ -48,8 +50,8 @@ export class AppComponent {
           this.db.object('/users/' + user.uid).valueChanges().subscribe((res: any) => {
             console.log(res.role);
             if (res.role == "Admin") {
-              this.router.navigate(['/new-lab']);
-              //localStorage.setItem('uid', success.uid)
+              this.router.navigate(['/registered-labs-list']);
+              //localStorage.setItem('uid', success.uid)  
               this.sideAdminMenu();
             } else {
               this.sideMenu();
@@ -135,5 +137,9 @@ export class AppComponent {
 
   isLoggedin() {
     return localStorage.getItem("uid") != null;
+  }
+
+  ngOnInit(){
+    
   }
 }

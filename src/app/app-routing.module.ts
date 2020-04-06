@@ -24,7 +24,8 @@ const routes: Routes = [
   { path: 'paytmtest', loadChildren: './paytmtest/paytmtest.module#PaytmtestPageModule' },
   { path: 'new-lab', loadChildren: './new-lab/new-lab.module#NewLabPageModule' },
   { path: 'payment-success', loadChildren: './payment-success/payment-success.module#PaymentSuccessPageModule' },
-  { path: 'payment-failure', loadChildren: './payment-failure/payment-failure.module#PaymentFailurePageModule' },
+  { path: 'payment-failure', loadChildren: './payment-failure/payment-failure.module#PaymentFailurePageModule' },  { path: 'registered-labs-list', loadChildren: './registered-labs-list/registered-labs-list.module#RegisteredLabsListPageModule' },
+
 
 ];
 

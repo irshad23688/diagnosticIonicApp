@@ -31,8 +31,10 @@
     "angular-font-awesome": "^3.1.2",
     "bootstrap": "^4.4.1",
     "com-darryncampbell-cordova-plugin-intent": "^2.0.0",
+    "com.razorpay.cordova": "1.4.9",
     "cordova-android": "^8.1.0",
     "cordova-android-support-gradle-release": "^3.0.1",
+    "cordova-browser": "6.0.0",
     "cordova-plugin-androidx-adapter": "^1.1.0",
     "cordova-plugin-device": "^2.0.2",
     "cordova-plugin-inappbrowser": "^3.2.0",
@@ -99,10 +101,12 @@
       "cordova-android-support-gradle-release": {
         "ANDROID_SUPPORT_VERSION": "27.+"
       },
-      "cordova-plugin-androidx-adapter": {}
+      "cordova-plugin-androidx-adapter": {},
+      "com.razorpay.cordova": {}
     },
     "platforms": [
-      "android"
+      "android",
+      "browser"
     ]
   }
 }

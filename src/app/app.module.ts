@@ -22,6 +22,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AngularFontAwesomeModule } from 'angular-font-awesome'
 import { InAppBrowser } from '@ionic-native/in-app-browser/ngx';
 import { WebIntent } from '@ionic-native/web-intent/ngx';
+import { Configuration } from 'src/assets/config';
 
 @NgModule({
   declarations: [AppComponent],
@@ -33,7 +34,6 @@ import { WebIntent } from '@ionic-native/web-intent/ngx';
     AngularFireDatabaseModule,
     HttpClientModule,
     AngularFireAuthModule,
-    
     AngularFontAwesomeModule
 ],
   providers: [
@@ -41,6 +41,7 @@ import { WebIntent } from '@ionic-native/web-intent/ngx';
     SplashScreen,
     InAppBrowser,
     WebIntent,
+    Configuration,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
   ],
   bootstrap: [AppComponent]

@@ -15,15 +15,11 @@
     </ion-item>
     <ion-item class="item">
         <ion-label position="floating">Email</ion-label>
-        <ion-input  formControlName='email'></ion-input>
+        <ion-input type="email" formControlName='email'></ion-input>
         </ion-item>
     <ion-item class="item">
         <ion-label position="floating">Address</ion-label>
-        <ion-input  formControlName='address'></ion-input>
-    </ion-item>
-    <ion-item class="item">
-        <ion-label position="floating">Address Line1</ion-label>
-        <ion-input  formControlName='addressline1'></ion-input>
+        <textarea formControlName='address'></textarea>
     </ion-item>
     <ion-item class="item">
         <ion-label position="floating">City</ion-label>
@@ -35,19 +31,19 @@
    </ion-item>
    <ion-item class="item">
       <ion-label position="floating">Pin Code</ion-label>
-      <ion-input  formControlName='pincode'></ion-input>
+      <ion-input type="tel"pattern="^[0-9]{6,6}$"  maxLength="6"  formControlName='pincode'></ion-input>
     </ion-item>
     <ion-item class="item">
         <ion-label position="floating">Contact Person Name</ion-label>
-        <ion-input  formControlName='personname'></ion-input>
+        <ion-input type="text" formControlName='personName'></ion-input>
     </ion-item>
     <ion-item class="item">
           <ion-label position="floating">Mobile Number</ion-label>
-          <ion-input  formControlName='mobilenumber'></ion-input>
+          <ion-input type='tel' pattern="^[0-9]{10,10}$" maxlength="10" formControlName='mobileNumber'></ion-input>
     </ion-item>
     <div>
-        <ion-button type="submit"  expand="block">Submit</ion-button>
-         <ion-button type ="button"   expand="block" (click)='onCancel()' color="light">Back</ion-button>
+        <ion-button type="submit"  expand="block" [disabled]="!labsignup.valid">Submit</ion-button>
+         <ion-button type ="button" expand="block" (click)='onCancel()' color="light">Back</ion-button>
       </div>
   </form> 
   </ion-grid>

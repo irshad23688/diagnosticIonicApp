@@ -18,18 +18,18 @@ export class LabsregisterPage implements OnInit {
   ngOnInit() {
     this.labsignup=this.formBuilder.group({
       labname:['',Validators.required],
-      email:['',Validators.required],
+      email:['',[Validators.required, Validators.email, Validators.pattern('[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}')]],
       address:['',Validators.required],
-      addressline1:['',Validators.required],
       city:['',Validators.required],
       state:['',Validators.required],
       pincode:['',Validators.required],
-      personname:['',Validators.required],
-      mobilenumber:['',Validators.required]
+      personName:['',Validators.required],
+      mobileNumber:['',Validators.required]
     });
   }
-  onSubmit(){  
-    this.labsignupdetails.push(this.labsignup.value);
+  onSubmit(){
+    let signupSucess = Object.assign(this.labsignup.value,this.updateDateAndUser());
+    this.labsignupdetails.push(signupSucess);
     swal.fire('Data Saved successfully');
     this.labsignup.reset();
     this.router.navigate(['']);
@@ -37,4 +37,15 @@ export class LabsregisterPage implements OnInit {
 onCancel(){  
    this.router.navigate(['']);
 }
+updateDateAndUser(){
+  let updateDateUser=
+   {
+   'createdDate': Date.now(),
+    'updatedDate': Date.now(),
+    'isActive' :true,
+    'status':'Pending'
+   }
+   return updateDateUser;
+ 
+ }
 }
