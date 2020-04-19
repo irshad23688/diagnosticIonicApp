@@ -46,14 +46,6 @@ textarea {
     background-color: white;
 }
 
-.cancelBtn {
-    float: right;
-    color: white;
-    background-color: #f902029c;
-    width: 30px;
-    height: 30px;
-}
-
 .masters {
     --ion-background-color: #f4f4f6;
 }
@@ -68,6 +60,14 @@ ion-card {
     padding: 10px 30px;
     width: 80%;
     color: white;
+}
+
+.cancelBtn {
+    float: right;
+    color: white;
+    background-color: #f902029c;
+    width: 30px;
+    height: 30px;
 }
 
 .addBtn {

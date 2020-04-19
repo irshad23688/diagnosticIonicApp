@@ -43,7 +43,12 @@ export class AddAppointmentPage implements OnInit {
   payId; 
   keyId; 
   currency:string = 'INR'; 
-  // paymentAmount:number = 500; 
+  couponTable;
+  couponDetails;
+  discountedPrice;
+  totalPrice;
+  discount;
+    // paymentAmount:number = 500; 
   // razor_key = 'rzp_test_VOg9sl36SolYNd'; 
   // dummyTest
   // labList: [];
@@ -59,6 +64,7 @@ export class AddAppointmentPage implements OnInit {
   }
 
   ngOnInit() {
+    this.couponDetails=[];
     this.addAppointmentForm = this.formBuilder.group( {
      name:['', Validators.required], 
       mobileNumber:['', Validators.required], 
@@ -66,10 +72,27 @@ export class AddAppointmentPage implements OnInit {
       services:['', Validators.required], 
       appointDate:['', Validators.required], 
       modeOfPayment:['', Validators.required], 
-      
+      coupon:['',Validators.required]
     })
     if (this.af.auth.currentUser) {
-      this.userId = this.af.auth.currentUser.uid; 
+      this.userId = this.af.auth.currentUser.uid;
+      this.afd.object('/users/' + this.userId).valueChanges().subscribe((res: any) => {
+        console.log(res.role);
+          this.couponTable = this.afd.list('/coupons',ref=>ref.orderByChild("role").equalTo(res.role)).snapshotChanges().subscribe(res=>{
+            console.log(res);
+            res.forEach(item => {
+              let temp = item.payload.val();
+              // this.discountedPrice= temp.value;
+              console.log('temp', temp)
+              temp["$key"] = item.payload.key;
+              this.couponDetails.push(temp);
+              this.discountedPrice= this.couponDetails[0].value;
+              this.discountedPrice= this.discountedPrice/100;
+              console.log(this.discountedPrice);
+              // console.log("orders-" + JSON.stringify(this.couponDetails));
+            });
+          })
+      });
     }
     this.payeeDetails.valueChanges().subscribe(data =>  {
       this.payeeList = data; 
@@ -87,10 +110,12 @@ onSubmit() {
       let keyDetails =  {
         labKey:this.appointmentId, 
         labName:this.labName, 
-        serviceRate:this.servicePrice, 
+        serviceRate:this.servicePrice,
+        discountedRate: (this.servicePrice - (this.servicePrice * this.discountedPrice)),
         bookingId:this.bookingId, 
         status:'Booked', 
         pStatus:'Pending', 
+        adminStatus:true,
         appointDate:this.formatDate(this.addAppointmentForm.value.appointDate)
       }
       let newAppointDetails = Object.assign(this.addAppointmentForm.value, keyDetails,this.updateDateAndUser())
@@ -106,35 +131,41 @@ ionViewDidEnter() {
     this.labAppointmentList.push(res); 
     this.appointmentId = res.key; 
     this.labName = res.labname; 
-    this.labAppointServList = res.services; 
-    
+    this.labAppointServList = res.services;
 });
 }
 
 displayPrice(event) {
-  for (let i = 0; i <= this.labAppointServList.length; i++) {
+  for (let i = 0; i < this.labAppointServList.length; i++) {
+    if(this.labAppointServList[i].service!== undefined){
       if (event.target.value === this.labAppointServList[i].service) {
-      this.servicePrice = this.labAppointServList[i].price
+        this.servicePrice = this.labAppointServList[i].price;
+        this.servicePrice= parseInt(this.servicePrice);
+  }
+    }
+    
 }
-}
+  this.totalPrice= this.servicePrice - (this.servicePrice*this.discountedPrice);
+
   }
 
 reset() {
-    this.addAppointmentForm.reset(); 
-
+    this.addAppointmentForm.reset();
   }
 cashPaymentJson() {
     let cashJson =  {
         orderId:this.bookingId, 
-        pStatus:'Pending', 
-        txnId:'', 
-        txnRef:'', 
+        adminStatus:true,
+        pStatus:'Pending',
+        extras:{
+          txnId:'', 
+          txnRef:'',
+          responseCode:'', 
+          ApprovalRefNo:'', 
+        },        
         modeOfPayment:'Cash', 
-        responseCode:'', 
-        ApprovalRefNo:'', 
         service:this.addAppointmentForm.value.services, 
-        amount:this.servicePrice
-
+        amount:this.servicePrice,
     }
     return cashJson; 
   }
@@ -142,6 +173,7 @@ upiPaymentJson() {
     let upiJson =  {
       orderId:this.bookingId, 
       modeOfPayment:'UPI', 
+      adminStatus:true,
       service:this.addAppointmentForm.value.services, 
       amount:this.servicePrice, 
       // status:'Booked',
@@ -158,7 +190,8 @@ upiPaymentJson() {
   cardPaymentJson() {
     let cardJson =  {
       orderId:this.bookingId, 
-      modeOfPayment:'CARD', 
+      modeOfPayment:'CARD',
+      adminStatus:true,
       service:this.addAppointmentForm.value.services, 
       amount:this.servicePrice, 
       // status:'Booked',
@@ -188,8 +221,14 @@ paymentMethod() {
     // })); 
     if (this.addAppointmentForm.value.modeOfPayment === 'Cash') {
       let cashPayment = Object.assign(this.cashPaymentJson(),this.updateDateAndUser());
+      console.log(cashPayment)
         this.paymentDetails.push(cashPayment).then(res =>  {
           swal.fire('You booking is confirmed. Please pay the amount at diagnostic center')
+          // console.log('Res',res.key);
+          this.checkcndition(this.bookingId).then(res=>{
+            this.updateCashDb(res);
+            
+          });
         this.route.navigate(['/appointment'])
         }, error =>  {
           swal.fire('Something Went Wrong'); 
@@ -232,7 +271,29 @@ paymentMethod() {
   //    responseData.forEach(r=>{
   //      if(r.bookingId===this.bookingId){
        this.updateSuccessObj= this.afd.object("/bookings/"+key)
-       this.updateSuccessObj.update({pStatus:reponseStatus,paymentId: this.payId}).then((res)=>{
+       this.updateSuccessObj.update({pStatus:reponseStatus, extras:{
+        txnId: this.payId
+       }
+      }).then((res)=>{
+        //  alert('Updated')
+        });
+      //  }
+    //  })
+  //  })
+ }
+ updateCashDb(key){
+  //  this.dbKey.subscribe(res=>{
+  //    let responseData=res;
+  //    responseData.forEach(r=>{
+  //      if(r.bookingId===this.bookingId){
+       this.updateSuccessObj= this.afd.object("/bookings/"+key)
+       this.updateSuccessObj.update({extras:{
+        txnId:'', 
+        txnRef:'',
+        responseCode:'', 
+        ApprovalRefNo:'', 
+      }
+      }).then((res)=>{
         //  alert('Updated')
         });
       //  }
@@ -252,6 +313,8 @@ paymentMethod() {
   return exercises;
   });
 }
+
+
 formatDate(date) {
   var d = new Date(date),
       month = '' + (d.getMonth() + 1),
@@ -266,16 +329,12 @@ formatDate(date) {
   return [year, month, day].join('-');
 }
 payWithRazor() {
-  console.log('price',this.servicePrice)
-  console.log('number',this.addAppointmentForm.value.mobileNumber)
-  console.log('name',this.addAppointmentForm.value.name)
-  let paymentId;
   var options = {
     // description: 'Credits towards consultation',
     // image: 'https://i.imgur.com/3g7nmJC.png',
     currency: this.currency, // your 3 letter currency code
     key: this.config.secretId, // your Key Id from Razorpay dashboard
-    amount: this.servicePrice *100, // Payment amount in smallest denomiation e.g. cents for USD
+    amount: ((this.servicePrice*100) - ((this.servicePrice*100)*this.discountedPrice)), // Payment amount in smallest denomiation e.g. cents for USD
     notes: {
       booking_Id: this.bookingId,
       name: 'Sonigra'
@@ -325,6 +384,9 @@ successCallback(payment_id) {
     this.cardPayment('FAILURE');
     this.route.navigate(['/payment-failure']);
   }
+  this.getService.getPaymentDetails(payment_id).subscribe(res=>{
+    // this.dummyTest.push(res);
+  })
 }
 cardPayment(status){
   let payStatus={
@@ -351,5 +413,7 @@ updateDateAndUser(){
   return updateDateUser;
 
 }
-
+couponChange(event){
+ this.discount=event.target.value;
+}
 }

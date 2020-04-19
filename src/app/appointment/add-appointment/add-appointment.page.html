@@ -8,6 +8,8 @@
 </ion-header>
 
 <ion-content>
+    <form [formGroup]="addAppointmentForm" (ngSubmit)="onSubmit()">
+
     <!--Accordion wrapper-->
     <div class="accordion md-accordion" id="accordionEx" role="tablist" aria-multiselectable="true">
     
@@ -59,7 +61,8 @@
     
       </div>
       <!-- Accordion card -->
-    
+      
+
       <!-- Accordion card -->
       <div class="card">
     
@@ -77,19 +80,8 @@
         <div id="collapseTwo2" class="collapse" role="tabpanel" aria-labelledby="headingTwo2"
           data-parent="#accordionEx">
           <div class="card-body">
-            <form [formGroup]="addAppointmentForm" (ngSubmit)="onSubmit()">
               <ion-card>
-                <ion-label position="stacked" class="appointlabel"> Services *</ion-label>
-                <!-- <ion-label stacked class="appointlabel"> Services</ion-label> -->
-                <ion-select name="service" placeholder="Select Service" (ionChange)="displayPrice($event)" formControlName='services' interface="popover">
-                  <ion-select-option  *ngFor="let ser of labAppointServList">{{ser.service}}</ion-select-option>
-                </ion-select>
-              
-              <ion-item *ngIf="servicePrice" >
-                  <ion-label position="stacked" class="appointlabel"> Price</ion-label>
-                <ion-input readonly ><i class="fa fa-inr" aria-hidden="true"></i>&nbsp;{{servicePrice}}</ion-input>
-        
-              </ion-item>
+                
               <!-- <ion-item> -->
                 <ion-label position="stacked" class="appointlabel">Enter Patient Name *</ion-label>
                 <ion-item>
@@ -130,7 +122,52 @@
         
               <!-- <ion-item> -->
                 <br> <br> 
-                <ion-label class="appointlabel">Payment *</ion-label>
+            </ion-card>
+          </div>
+        </div>
+      </div>
+      <div class="card-header" role="tab" id="headingTwo2">
+          <a class="collapsed" data-toggle="collapse" data-parent="#accordionEx" href="#collapseTwo3"
+            aria-expanded="false" aria-controls="collapseTwo3">
+            <h5 class="mb-0">
+             Service Details <i class="fa fa-angle-down" style="float:right;" aria-hidden="true"></i>
+            </h5>
+          </a>
+        </div>
+    
+        <!-- Card body -->
+        <div id="collapseTwo3" class="collapse" role="tabpanel" aria-labelledby="headingTwo3"
+          data-parent="#accordionEx">
+          <div class="card-body">
+            <ion-card>
+              <ion-label position="stacked" class="appointlabel"> Services *</ion-label>
+              <!-- <ion-label stacked class="appointlabel"> Services</ion-label> -->
+              <ion-select name="service" placeholder="Select Service" (ionChange)="displayPrice($event)" formControlName='services' interface="popover">
+                <ion-select-option *ngFor="let ser of labAppointServList">{{ser.service}}</ion-select-option>
+              </ion-select>
+            <ion-item *ngIf="servicePrice">
+                <ion-label position="stacked" class="appointlabel"> Price</ion-label>
+              <ion-input readonly ><i class="fa fa-inr" aria-hidden="true"></i>&nbsp;{{servicePrice}}</ion-input>
+            </ion-item>
+            <ion-label class="appointlabel">Select Coupon *</ion-label>
+            <ion-select placeholder="Select Coupon" (ionChange)='couponChange($event)' formControlName='coupon' interface="popover">
+              <ion-select-option *ngFor="let coupon of couponDetails"  value="{{coupon.name}}">{{coupon.name}}</ion-select-option>
+            </ion-select>
+            <div *ngIf="(discount && servicePrice)" style="margin: 0px 10px;">
+          <div>
+            <span><b>Service Rate</b></span>
+            <span style="float:right;">{{servicePrice}}</span>
+          </div>
+          <div>
+            <span><b>Discount</b></span>
+            <span style="float:right;">{{discount}}</span> 
+          </div>
+          <div>
+            <span><b>Total Amount</b></span>
+            <span style="float:right;"><i class="fa fa-inr" aria-hidden="true"></i>&nbsp;{{totalPrice}}</span>
+          </div>
+        </div><br>
+          <ion-label class="appointlabel">Payment *</ion-label>
                 <ion-select placeholder="Select Payment" formControlName='modeOfPayment' interface="popover">
                   <ion-select-option value="Cash">Cash</ion-select-option>
                   <ion-select-option value="UPI"> UPI</ion-select-option>
@@ -143,12 +180,9 @@
 
               </div>
             </ion-card>
-            </form>
           </div>
         </div>
-    
-      </div>
-     
     </div>
+  </form>
     <!-- Accordion wrapper -->
-    </ion-content>
+</ion-content>

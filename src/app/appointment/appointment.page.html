@@ -26,12 +26,12 @@
              <ion-row>
                 <ion-col size="12">
                    {{data.name}} - <i class="fa fa-phone" aria-hidden="true"></i>&nbsp;
-                   {{data.number}}
+                   {{data.mobileNumber}}
                 </ion-col>
               </ion-row>
               <ion-row>
                 <ion-col size="5">
-                    <i class="fa fa-credit-card" aria-hidden="true"></i>&nbsp;{{data.payment}}
+                    <i class="fa fa-credit-card" aria-hidden="true"></i>&nbsp;{{data.modeOfPayment}}
                 </ion-col>
                 <ion-col size="7">
                   <b>Payment Status:</b>&nbsp;{{data.pStatus}}
@@ -43,6 +43,9 @@
                    </ion-col>
               </ion-row>
      </ion-card>
+     <!-- <ion-card> -->
+        <div [hidden]="showMsg" class="nolistMsg">No records to display.<br>Please click on 'Book' to book an appointment</div>
+     <!-- </ion-card> -->
      <!-- <ion-grid>
        
        <ion-row class="headercol">
